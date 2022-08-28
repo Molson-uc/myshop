@@ -32,7 +32,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    "orders.apps.CartConfig",
+    "orders.apps.OrdersConfig",
     "cart.apps.CartConfig",
     "shop.apps.ShopConfig",
     "django.contrib.admin",
