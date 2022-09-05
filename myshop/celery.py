@@ -1,4 +1,3 @@
-from argparse import Namespace
 import os
 from celery import Celery
 
