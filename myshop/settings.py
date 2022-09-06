@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import os
+from . import credentials
+import braintree
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-3%-w(92bfc4byf2x_smz%%r5$$2cv8)qdvt-0&)vutgvy+4d@o"
+SECRET_KEY = credentials.django_secret_key
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -32,6 +34,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    "payment.apps.PaymentConfig",
     "orders.apps.OrdersConfig",
     "cart.apps.CartConfig",
     "shop.apps.ShopConfig",
@@ -133,5 +136,16 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 
 CART_SESSION_ID = "cart"
 
-
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+BRAINTREE_MERCHANT_ID = credentials.braintree_marchant_id
+BRAINTREE_PUBLIC_KEY = credentials.braintree_public_key
+BRAINTREE_PRIVATE_KEY = credentials.braintree_private_key
+
+
+BRAINTREE_CONF = braintree.Configuration(
+    braintree.Environment.Sandbox,
+    BRAINTREE_MERCHANT_ID,
+    BRAINTREE_PUBLIC_KEY,
+    BRAINTREE_PRIVATE_KEY,
+)
