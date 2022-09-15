@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 import os
 from . import credentials
-import braintree
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -137,6 +136,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media/")
 CART_SESSION_ID = "cart"
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+import braintree
 
 BRAINTREE_MERCHANT_ID = credentials.braintree_marchant_id
 BRAINTREE_PUBLIC_KEY = credentials.braintree_public_key
