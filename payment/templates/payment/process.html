@@ -1,27 +1,37 @@
 {% extends "shop/base.html" %}
+{% load static %}
+
 
 {% block title %}Zapłać kartą{% endblock %}
-
 {% block content %}
-  <h1>Zapłać kartą</h1>
-  <form id="payment" method="post">
 
-    <label for="card-number">Card Number</label>
-    <div id="card-number" class="field"></div>
 
-    <label for="cvv">CVV</label>
-    <div id="cvv" class="field"></div>
+<h1>Zapłać kartą</h1>
+<form action="." id="payment" method="post">
+  <label class="hosted-field--label" for="card-number"><span class="icon">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg></span>Numer karty</label>
+  <div id="card-number" class="hosted-field"></div>
+  
+  <label class="hosted-field--label" for="cvv"><span class="icon">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+    </span>CVV</label>
+  <div id="cvv" class="hosted-field"></div>
+  
+  <label class="hosted-field--label" for="expiration-date"><span class="icon">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/></svg>
+   </span>Expiration Date</label>
+  <div id="expiration-date" class="hosted-field"></div>
+  
+  <input type="hidden" id="nonce" name="payment_method_nonce" value="">
+  {% csrf_token %}
+  <input type="submit" value="Zapłać">
+</form>
+{% comment %} {% endblock terminal %} {% endcomment %}
 
-    <label for="expiration-date">Expiration Date</label>
-    <div id="expiration-date" class="field"></div>
+<!-- includes the Braintree JS client SDK -->
 
-    <input type="hidden" id="nonce" name="payment_method_nonce" value="">
-    {% csrf_token %}
-    <input type="submit" value="Pay">
-  </form>
-  <!-- includes the Braintree JS client SDK -->
-  <script src="https://js.braintreegateway.com/web/3.58.0/js/client.min.js"></script>
-  <script src="https://js.braintreegateway.com/web/3.58.0/js/hosted-fields.min.js"></script>
+  <script src="https://js.braintreegateway.com/web/3.88.0/js/client.min.js"></script>
+  <script src="https://js.braintreegateway.com/web/3.88.0/js/hosted-fields.min.js"></script>
   <script>
     var form = document.querySelector('#payment');
     var submit = document.querySelector('input[type="submit"]');
@@ -53,10 +63,10 @@
         }
 
         submit.removeAttribute('disabled');
-
+        
         form.addEventListener('submit', function (event) {
           event.preventDefault();
-
+          
           hostedFieldsInstance.tokenize(function (tokenizeErr, payload) {
             if (tokenizeErr) {
               console.error(tokenizeErr);

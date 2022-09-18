@@ -2,6 +2,7 @@ import braintree
 from django.shortcuts import render, redirect, get_object_or_404
 from orders.models import Order
 from django.conf import settings
+from .tasks import peyment_completed
 
 gateway = braintree.BraintreeGateway(settings.BRAINTREE_CONF)
 
@@ -11,9 +12,7 @@ def payment_process(request):
     order = get_object_or_404(Order, id=order_id)
 
     if request.method == "POST":
-        # retrieve nonce
         nonce = request.POST.get("payment_method_nonce", None)
-        # create and submit transaction
         result = gateway.transaction.sale(
             {
                 "amount": "{:.2f}".format(order.get_total_cost()),
@@ -22,18 +21,15 @@ def payment_process(request):
             }
         )
         if result.is_success:
-            # mark the order as paid
             order.paid = True
-            # store the unique transaction id
             order.braintree_id = result.transaction.id
             order.save()
-            # launch asynchronous task
+            peyment_completed.delay(order.id)
 
             return redirect("payment:done")
         else:
             return redirect("payment:canceled")
     else:
-        # generate token
         print(settings.BRAINTREE_MERCHANT_ID)
         client_token = gateway.client_token.generate(
             params={"merchant_account_id": settings.BRAINTREE_MERCHANT_ID}
