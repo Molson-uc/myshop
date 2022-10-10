@@ -1,4 +1,4 @@
-# /Myshop
+# Myshop
 ## Introdaction
 This Django project is fully operational online shop.
 ## Features
